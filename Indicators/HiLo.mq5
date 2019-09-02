@@ -29,6 +29,8 @@ double         Superior[];
 double         Inferior[];
 
 input int periods = 3;
+input MEASUREMENT measurement = STANDARD;
+
 
 int OnInit()
   {
@@ -50,6 +52,6 @@ int OnCalculate(const int rates_total,
                 const long &volume[],
                 const int &spread[])
   {
-   draw(rates_total,open,high,low,close,periods,Superior,Inferior);
+   draw(rates_total, open, high, low, close, measurement, periods, Superior,Inferior);
    return(rates_total);
   }
