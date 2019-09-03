@@ -56,25 +56,47 @@ bool isToBuy(const double sell,
   return(close >= sell);
 }
 
-int draw(const int rates_total,
-         const double &open[],
-         const double &high[],
-         const double &low[],
-         const double &close[],
-         const MEASUREMENT measurement,
-         const int periods,
-         double& Superior[],
-         double& Inferior[])
+void drawCandle(double sell,
+                double buy,
+                double close,
+                bool &isPrevLo,
+                double& Superior,
+                double& Inferior)
+{
+  if (isUndefinedPosition(sell, buy,  close))
   {
-   bool isPrevLo = true;
+     if (isPrevLo) {
+       Inferior = buy;
+     } else {
+       Superior = sell;
+     }
+  }
+  else {
+     if (isToBuy(sell, close)) {
+        Inferior = buy;
+        isPrevLo = true;
+     } else {
+        Superior = sell;
+        isPrevLo = false;
+     }
+ }
+}
 
-   ArrayResize(Inferior, rates_total);
-   ArrayInitialize(Inferior, 0.0);
-   ArrayResize(Superior, rates_total);
-   ArrayInitialize(Superior, 0.0);
-   
-   for(int i=periods; i < rates_total; i++)
-   {
+void draw(const int rates_total,
+       const int prev_calculated,
+       bool& isPrevLo,
+       const double &open[],
+       const double &high[],
+       const double &low[],
+       const double &close[],
+       const MEASUREMENT measurement,
+       const int periods,
+       double& Superior[],
+       double& Inferior[])
+{
+  if (prev_calculated == 0) {
+    for(int i=periods; i < rates_total; i++)
+    {
       double sell = 0;
       double buy = 0;
 
@@ -82,24 +104,19 @@ int draw(const int rates_total,
 
       Inferior[i] = 0;
       Superior[i] = 0;
-      
-      if (isUndefinedPosition(sell, buy,  close[i]))
-      {
-         if (isPrevLo) {
-           Inferior[i] = buy;
-         } else {
-           Superior[i] = sell;
-         }
-      }
-      else {
-         if (isToBuy(sell, close[i])) {
-            Inferior[i] = buy;
-            isPrevLo = true;
-         } else {
-            Superior[i] = sell;
-            isPrevLo = false;
-         }
-     }
-   }
-   return(rates_total);
+ 
+      drawCandle(sell, buy, close[i], isPrevLo, Superior[i], Inferior[i]);
+    }
+  } else {
+      double sell = 0;
+      double buy = 0;
+      int current = rates_total - 1;
+
+      getAveragePrice(sell, buy, periods, high, low, open, close, measurement, current);
+
+      Inferior[current] = 0;
+      Superior[current] = 0;
+ 
+      drawCandle(sell, buy, close[current], isPrevLo, Superior[current], Inferior[current]);
   }
+}

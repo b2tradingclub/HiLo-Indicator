@@ -31,6 +31,7 @@ double         Inferior[];
 input int periods = 3;
 input MEASUREMENT measurement = STANDARD;
 
+bool isPrevLo = true;
 
 int OnInit()
   {
@@ -51,7 +52,7 @@ int OnCalculate(const int rates_total,
                 const long &tick_volume[],
                 const long &volume[],
                 const int &spread[])
-  {
-   draw(rates_total, open, high, low, close, measurement, periods, Superior,Inferior);
+{
+   draw(rates_total, prev_calculated, isPrevLo, open, high, low, close, measurement, periods, Superior,Inferior);
    return(rates_total);
-  }
+}
