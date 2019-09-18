@@ -15,7 +15,7 @@
 //--- plot Superior
 #property indicator_label1  "Superior"
 #property indicator_type1   DRAW_ARROW
-#property indicator_color1  clrBlack
+#property indicator_color1  clrYellowGreen
 #property indicator_style1  STYLE_SOLID
 #property indicator_width1  2
 //--- plot Inferior
@@ -30,16 +30,16 @@ double         Inferior[];
 
 input int periods = 3;
 input MEASUREMENT measurement = STANDARD;
+input bool showData = false;
 
-bool isPrevLo = true;
+bool  isPrevLo    = true;
 
 int OnInit()
   {
-//--- indicator buffers mapping
-   SetIndexBuffer(0,Superior,INDICATOR_DATA);
-   SetIndexBuffer(1,Inferior,INDICATOR_DATA);
-//---
-   return(INIT_SUCCEEDED);
+    SetIndexBuffer(0, Superior, INDICATOR_DATA);
+    SetIndexBuffer(1, Inferior, INDICATOR_DATA);
+
+    return(INIT_SUCCEEDED);
   }
 
 int OnCalculate(const int rates_total,
@@ -53,6 +53,12 @@ int OnCalculate(const int rates_total,
                 const long &volume[],
                 const int &spread[])
 {
-   draw(rates_total, prev_calculated, isPrevLo, open, high, low, close, measurement, periods, Superior,Inferior);
+   char Comments[];
+   draw(rates_total, prev_calculated, isPrevLo, open, high, low, close, measurement, periods, Superior,Inferior, Comments);
+
+   if (showData) {
+     Comment(CharArrayToString(Comments));
+   }
+
    return(rates_total);
 }
