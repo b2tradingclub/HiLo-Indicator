@@ -83,14 +83,13 @@ bool isNewBar() {
 }
 
 void drawCandle(double sell,
-                double buy,
-                double close,
-                bool &isPrevLo,
+                double  buy,
+                double  close,
+                bool    &isPrevLo,
                 double& Superior,
                 double& Inferior)
 {
-  if (isUndefinedPosition(sell, buy,  close))
-  {
+  if (isUndefinedPosition(sell, buy,  close)) {
     if (isPrevLo) {
       Inferior = buy;
     } else {
@@ -98,14 +97,12 @@ void drawCandle(double sell,
     }
   }
   else {
-     if (isToBuy(buy, sell, close, isPrevLo)) {
-        Inferior = buy;
-        //if (isNewBar()) { isPrevLo = true; }
-     } else {
-        Superior = sell;
-        //if (isNewBar()) { isPrevLo = false; }
-     }
- }
+    if (isToBuy(buy, sell, close, isPrevLo)) {
+      Inferior = buy;
+    } else {
+      Superior = sell;
+   }
+  }
 }
 
 void draw(const int rates_total,
@@ -131,6 +128,8 @@ void draw(const int rates_total,
       Inferior[i] = 0;
       Superior[i] = 0;
       drawCandle(sell, buy, close[i], isPrevLo, Superior[i], Inferior[i]);
+
+      isPrevLo = Inferior[i] > 0;
     }
     isPrevLo = Inferior[rates_total - 1] > 0;
   } else {
